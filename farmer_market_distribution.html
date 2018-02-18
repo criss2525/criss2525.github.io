@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <style type="text/css">
+            .button1 {
+                    background-color: white;
+                    border: 2px solid red;
+                    color: black;
+                    text-align: center;
+                    display: inline-block;
+                    font-size: 16px;
+                    padding: 10px 24px;
+                    border-radius: 4px;
+                    position: absolute;
+                    top: 10%;
+                    left: 10%;
+                    -webkit-transition-duration: 0.4s;
+                    transition-duration: 0.4s;
+            }
+            .button1:hover {
+                    background-color: red;
+                    color:white;
+            }
+            .button2 {
+                    background-color: white;
+                    border: 2px solid blue;
+                    color: black;
+                    text-align: center;
+                    display: inline-block;
+                    font-size: 16px;
+                    padding: 10px 24px;
+                    border-radius: 4px;
+                    position: absolute;
+                    top: 22%;
+                    left: 10%;
+                    -webkit-transition-duration: 0.4s;
+                    transition-duration: 0.4s;
+
+            }
+            .button2:hover {
+                    background-color: blue;
+                    color:white;
+            }
+            .button3 {
+                    background-color: white;
+                    border: 2px solid yellow;
+                    color: black;
+                    text-align: center;
+                    display: inline-block;
+                    font-size: 16px;
+                    padding: 10px 24px;
+                    border-radius: 4px;
+                    position: absolute;
+                    top: 34%;
+                    left: 10%;
+                    -webkit-transition-duration: 0.4s;
+                    transition-duration: 0.4s;
+
+            }
+            .button3:hover {
+                    background-color: yellow;
+                    color:white;
+            }
+            .button4 {
+                    background-color: white;
+                    border: 2px solid green;
+                    color: black;
+                    text-align: center;
+                    display: inline-block;
+                    font-size: 16px;
+                    padding: 10px 24px;
+                    border-radius: 4px;
+                    position: absolute;
+                    top: 46%;
+                    left: 10%;
+                    -webkit-transition-duration: 0.4s;
+                    transition-duration: 0.4s;
+
+            }
+            .button4:hover {
+                    background-color: green;
+                    color:white;
+            }
+            h1 {
+                text-align: center;
+                color: black;
+            }
+        </style>
+        <meta charset="utf-8">
+        <title>This is a reproduction of http://iquantny.tumblr.com/post/129373499164/this-is-quantifiably-the-best-month-to-go-to-the as the first line</title>
+        <script type="text/javascript" src="d3.js"></script>
+    </head>
+    <body>
+        <h1>NYC Green Markets - Unique Produce Types</h6>
+        <!-- buttons -->
+        <div class="button1"> Fresh Fruit
+        </div>
+        
+        <div class="button2"> Fresh Vegetable
+        </div>
+        
+        <div class="button3"> Storage Fruit
+        </div>
+        
+        <div class="button4"> Storage Vegetable 
+        </div>
+
+        <script type="text/javascript">
+            //Width and height
+			var margin = {top: 10, right: 50, bottom: 200, left: 500};
+            var width = 960 - margin.left - margin.right,
+                height = 500 - margin.top - margin.bottom;        
+            
+			var dataset, xScale, yScale, xAxis, yAxis;  //Empty, for now
+			var dataset2;
+            //For converting strings to Dates
+            var parseTime = d3.timeParse("%b");
+            
+            //For converting Dates to strings
+            var formatTime = d3.timeFormat("%b");
+                        
+            //covert data from CSV
+            var rowConverter = function(d) {
+                return {
+                        Index: parseInt(d.Index),  
+                        Month: parseTime(d.Month), //No conversion
+                        Count: parseInt(d.Count)
+                    };
+                }          
+
+            //read from CSV 
+            d3.csv("data_converted.csv", rowConverter, function(rawData){
+               
+                //copy data into a global dataset
+                dataset = rawData.slice(0,12);
+                dataset2 = rawData.slice(12,24);
+                dataset3 = rawData.slice(24,36);
+                dataset4 = rawData.slice(36,48);
+                
+				var startDate = d3.min(dataset, function(d) { return d.Month; });
+				var endDate = d3.max(dataset, function(d) { return d.Month; });
+                
+                xScale = d3.scaleTime()
+                           .domain([
+                                //d3.timeMonth.offset("", -1),
+                                d3.timeMonth.offset(startDate, -1),
+                                d3.timeMonth.offset(endDate, 0)
+                                ])
+                           .range([0, width]);
+                
+                yScale = d3.scaleLinear()
+                           .domain([0,
+                                d3.max(dataset, function(d) { return d.Count;})
+                                ])
+                           .range([height, 0]);
+                
+                //Define X axis
+				var xAxis = d3.axisBottom()
+								  .scale(xScale)
+								  //.ticks(10)
+								  .tickFormat(formatTime);
+
+				//Define Y axis
+				var yAxis = d3.axisLeft()
+								  .scale(yScale)
+								  .ticks(10);
+                
+                
+                //Create SVG element
+                var svg = d3.select("body").append("svg")
+                            .attr("width", width + margin.left + margin.right)
+                            .attr("height", height + margin.top + margin.bottom)
+                            .append("g")
+                            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                
+/*                //Create X axis
+	   			svg.append("g")
+	   				.attr("class", "axis")
+	   				.attr("transform", "translate(0," + (height) + ")")
+	   				.call(xAxis);
+	   			
+	   			//Create Y axis
+	   			svg.append("g")
+	   				.attr("class", "axis")
+	   				//.attr("transform", "translate(" + 0 + ",0)")
+	   				.call(yAxis);
+*/                    
+                    
+                svg.selectAll("rect")
+                       .data(dataset)
+                       .enter()
+                       .append("rect")
+                       .attr("x", function(d){
+                            return xScale(d.Month);
+                        })
+                       .attr("y", function(d){
+                            return yScale(d.Count);
+                        })
+                       .attr("height", function(d) {        
+                            return height - yScale(d.Count); })
+                       .attr("width", 10)
+                       .attr("fill", "red"); 
+
+                //Create x-axis
+                svg.append("g")
+                    .attr("class", "x axis")    
+                    .attr("transform", "translate(0," + height + ")")
+                    .call(xAxis);
+
+                //Create y-axis
+                svg.append("g")
+                    .attr("class", "y axis")    
+                    .call(yAxis);
+
+
+                       
+//Transitions                      
+                d3.select("div.button1")
+                    .on("click", function() {
+                    
+                    //Update scale domain
+                    yScale.domain([0,
+                                d3.max(dataset, function(d) { return d.Count;})
+                                ]);
+                    //Update y-axis
+                    svg.select(".y.axis")
+                       .transition()
+                       .duration(500)
+                       .call(yAxis);
+                    
+                    
+                    svg.selectAll("rect")
+                       .data(dataset)
+                       .transition()
+                       .delay(function(d, i) {
+                            return i / dataset.length * 1000;   // <-- Where the magic happens
+                        })
+                       .duration(500)
+                       .ease(d3.easeBounceOut)
+                       .attr("y", function(d){
+                            return yScale(d.Count);
+                        })
+                       .attr("height", function(d) {        
+                            return height - yScale(d.Count); })
+                       .attr("width", 10)
+                       .attr("fill", "red");    
+                });
+                
+
+                
+                d3.select("div.button2")
+                    .on("click", function() {
+                    
+                    //Update scale domain
+                    yScale.domain([0,
+                                d3.max(dataset2, function(d) { return d.Count;})
+                                ]);
+                    //Update y-axis
+                    svg.select(".y.axis")
+                       .transition()
+                       .duration(500)
+                       .call(yAxis);
+                    
+                    svg.selectAll("rect")
+                       .data(dataset2)
+                       .transition()
+                       .delay(function(d, i) {
+                            return i / dataset.length * 1000;   // <-- Where the magic happens
+                        })
+                       .duration(500)
+                       .ease(d3.easeBounceOut) 
+                       .attr("y", function(d){
+                            return yScale(d.Count);
+                        })
+                       .attr("height", function(d) {        
+                            return height - yScale(d.Count); 
+                        })
+                       .attr("fill", "blue");
+
+                });  
+
+                d3.select("div.button3")
+                    .on("click", function() {
+                    
+                    //Update scale domain
+                    yScale.domain([0,
+                                d3.max(dataset3, function(d) { return d.Count;})
+                                ]);
+                    //Update y-axis
+                    svg.select(".y.axis")
+                       .transition()
+                       .duration(500)
+                       .call(yAxis);
+                    
+                    svg.selectAll("rect")
+                       .data(dataset3)
+                       .transition()
+                       .delay(function(d, i) {
+                            return i / dataset.length * 1000;   // <-- Where the magic happens
+                        })
+                       .duration(500)
+                       .ease(d3.easeBounceOut) 
+                       .attr("y", function(d){
+                            return yScale(d.Count);
+                        })
+                       .attr("height", function(d) {        
+                            return height - yScale(d.Count); 
+                        })
+                       .attr("fill", "yellow");
+
+                }); 
+                
+                d3.select("div.button4")
+                    .on("click", function() {
+                    
+                    //Update scale domain
+                    yScale.domain([0,
+                                d3.max(dataset4, function(d) { return d.Count;})
+                                ]);
+                    //Update y-axis
+                    svg.select(".y.axis")
+                       .transition()
+                       .duration(500)
+                       .call(yAxis);
+                    
+                    svg.selectAll("rect")
+                       .data(dataset4)
+                       .transition()
+                       .delay(function(d, i) {
+                            return i / dataset.length * 1000;   // <-- Where the magic happens
+                        })
+                       .duration(500)
+                       .ease(d3.easeBounceOut) 
+                       .attr("y", function(d){
+                            return yScale(d.Count);
+                        })
+                       .attr("height", function(d) {        
+                            return height - yScale(d.Count); 
+                        })
+                       .attr("fill", "green");
+
+                }); 
+                
+            });             
+         
+    
+                
+        </script>
+        </body>
+</html>
