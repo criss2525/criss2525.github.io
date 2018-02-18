@@ -12,7 +12,7 @@
                     padding: 10px 24px;
                     border-radius: 4px;
                     position: absolute;
-                    top: 10%;
+                    top: 22%;
                     left: 10%;
                     -webkit-transition-duration: 0.4s;
                     transition-duration: 0.4s;
@@ -31,11 +31,10 @@
                     padding: 10px 24px;
                     border-radius: 4px;
                     position: absolute;
-                    top: 22%;
+                    top: 34%;
                     left: 10%;
                     -webkit-transition-duration: 0.4s;
                     transition-duration: 0.4s;
-
             }
             .button2:hover {
                     background-color: blue;
@@ -51,11 +50,10 @@
                     padding: 10px 24px;
                     border-radius: 4px;
                     position: absolute;
-                    top: 34%;
+                    top: 46%;
                     left: 10%;
                     -webkit-transition-duration: 0.4s;
                     transition-duration: 0.4s;
-
             }
             .button3:hover {
                     background-color: yellow;
@@ -71,11 +69,10 @@
                     padding: 10px 24px;
                     border-radius: 4px;
                     position: absolute;
-                    top: 46%;
+                    top: 58%;
                     left: 10%;
                     -webkit-transition-duration: 0.4s;
                     transition-duration: 0.4s;
-
             }
             .button4:hover {
                     background-color: green;
@@ -110,7 +107,7 @@
 			var margin = {top: 10, right: 50, bottom: 200, left: 500};
             var width = 960 - margin.left - margin.right,
                 height = 500 - margin.top - margin.bottom;        
-            
+                padding = 100;
 			var dataset, xScale, yScale, xAxis, yAxis;  //Empty, for now
 			var dataset2;
             //For converting strings to Dates
@@ -127,7 +124,6 @@
                         Count: parseInt(d.Count)
                     };
                 }          
-
             //read from CSV 
             d3.csv("data_converted.csv", rowConverter, function(rawData){
                
@@ -159,7 +155,6 @@
 								  .scale(xScale)
 								  //.ticks(10)
 								  .tickFormat(formatTime);
-
 				//Define Y axis
 				var yAxis = d3.axisLeft()
 								  .scale(yScale)
@@ -200,19 +195,26 @@
                             return height - yScale(d.Count); })
                        .attr("width", 10)
                        .attr("fill", "red"); 
-
                 //Create x-axis
                 svg.append("g")
                     .attr("class", "x axis")    
                     .attr("transform", "translate(0," + height + ")")
                     .call(xAxis);
-
                 //Create y-axis
                 svg.append("g")
                     .attr("class", "y axis")    
                     .call(yAxis);
+                    
+                //axes labels
+                svg.append("text")
+                    .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+                    .attr("transform", "translate("+ -(padding/3) +","+(height/2)+")rotate(-90)")  // text is drawn off the screen top left, move down and out and rotate
+                    .text("# of Unique Kinds of Produce");
 
-
+                svg.append("text")
+                    .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+                    .attr("transform", "translate("+ (width/2) +","+(height+(padding/3))+")")  // centre below axis
+                    .text("Month of the Year");
                        
 //Transitions                      
                 d3.select("div.button1")
@@ -246,7 +248,6 @@
                        .attr("fill", "red");    
                 });
                 
-
                 
                 d3.select("div.button2")
                     .on("click", function() {
@@ -276,9 +277,7 @@
                             return height - yScale(d.Count); 
                         })
                        .attr("fill", "blue");
-
                 });  
-
                 d3.select("div.button3")
                     .on("click", function() {
                     
@@ -307,7 +306,6 @@
                             return height - yScale(d.Count); 
                         })
                        .attr("fill", "yellow");
-
                 }); 
                 
                 d3.select("div.button4")
@@ -338,7 +336,6 @@
                             return height - yScale(d.Count); 
                         })
                        .attr("fill", "green");
-
                 }); 
                 
             });             
