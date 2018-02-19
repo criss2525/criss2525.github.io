@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <style type="text/css">
+            h1 {
+                text-align: center;
+                color: black;
+            }
+            h2 {
+                text-align: center;
+                color: black;
+            }
+        </style>
+        <meta charset="utf-8">
+        <title>Simple Page with D3</title>
+        <script type="text/javascript" src="d3.js"></script>
+    </head>
+    <body>
+        <h1>Number of months U.S. presidents spent in office</h1>
+        <script type="text/javascript">
+            //jitter plot
+            //Width and height
+			var margin = {top: 10, right: 450, bottom: 250, left: 100};
+            var width = 960 - margin.left - margin.right,
+                height = 500 - margin.top - margin.bottom;  
+                padding = 100;
+            var dataset, xScale, yScale, xAxis, yAxis;  //Empty, for now
+            
+            //histogram
+            var margin2 = {top: 100, right: 450, bottom: 800, left: 100};
+            var width2 = 960 - margin.left - margin.right,
+                height2 = 500 - margin.top - margin.bottom;  
+                padding2 = 100;
+            
+            var xScale2, yScale2, xAxis2, yAxis2;  //Empty, for now
+            
+            var dataset2 = [
+                            ["1","1","94"],["2","2", "48"],["3","3","96"],["4","4", "96"],["5","5", "96"]
+                           ];
+            
+
+            //covert data from CSV
+            var rowConverter = function(d) {
+                return {
+                        Index: parseInt(d.Index),  
+                        Name: d.Name, //No conversion
+                        Months: parseInt(d.Months)
+                    };
+                }
+                       
+                                
+            //read from CSV 
+            d3.csv("stringtoCSV.csv", rowConverter, function(rawData){
+                dataset = rawData;
+                console.log(dataset);
+                
+                xScale = d3.scaleLinear()
+                           .domain([0, d3.max(dataset, function(d) { return d.Months;})
+                                ])
+                           .range([0, width]);
+                
+                yScale = d3.scaleLinear()
+                           //.domain([0, d3.max(dataset, function(d) { return d.Index;})
+                           //     ])
+                           .domain([0, 70])
+                           .range([height, 0]);                
+                
+                //Create SVG element
+                var svg = d3.select("body").append("svg")
+                            .attr("width", width + margin.left + margin.right)
+                            .attr("height", height + margin.top + margin.bottom)
+                            .append("g")
+                            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	   			
+                //Define X axis
+				var xAxis = d3.axisBottom()
+								  .scale(xScale)
+								  .ticks(10)
+				//Define Y axis
+				var yAxis = d3.axisLeft()
+								  .scale(yScale)
+								  .ticks(10);
+                
+                //create X axis
+                svg.append("g")
+	   				.attr("class", "axis")
+	   				.attr("transform", "translate(0," + (height) + ")")
+	   				.call(xAxis);
+	   			
+	   			//Create Y axis
+	   			//svg.append("g")
+	   			//	.attr("class", "axis")
+	   			//	.call(yAxis);
+                
+                //axis label
+                svg.append("text")
+                    .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+                    .attr("transform", "translate("+ (width/2) +","+(height+(padding/3))+")")  // centre below axis
+                    .text("Months in the Office");  
+                
+                //histogram                
+                xScale2 = d3.scaleLinear()
+                           .domain([0, d3.max(dataset, function(d) { return d.Months;})
+                                ])
+                           .range([0, width2]);
+                
+                yScale2 = d3.scaleLinear()
+                           //.domain([0, d3.max(dataset, function(d) { return d.Index;})
+                           //     ])
+                           .domain([0, 20])
+                           .range([height2, 0]); 
+                
+                
+                
+                
+                var svg2 = d3.select("body").append("svg")
+                            .attr("width", width2 + margin2.left + margin2.right)
+                            .attr("height", height2 + margin2.top + margin2.bottom)
+                            .append("g")
+                            .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
+                
+
+                //Define X axis 2
+				var xAxis2 = d3.axisBottom()
+								  .scale(xScale2)
+								  .ticks(10)
+				//Define Y axis 2
+				var yAxis2 = d3.axisLeft()
+								  .scale(yScale2)
+								  .ticks(10);
+                
+                
+                //create X axis
+                svg2.append("g")
+	   				.attr("class", "axis")
+	   				.attr("transform", "translate(0," + (height2) + ")")
+	   				.call(xAxis2);
+	   			
+	   			//Create Y axis
+	   			svg2.append("g")
+	   				.attr("class", "axis")
+	   				.call(yAxis2);
+                
+                //axis label
+                svg.append("text")
+                    .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+                    .attr("transform", "translate("+ (width2/2) +","+(height2+(padding2/3))+")")  // centre below axis
+                    .text("Months in the Office");          
+                            
+                            
+                var mapForHistogram = rawData.map(function(i){
+                        return i.Months
+                })
+                console.log(mapForHistogram);
+                
+            //jitter plot
+
+                svg.selectAll("circle")
+                   .data(dataset)
+                   .enter()
+                   .append("circle")
+                   .attr("cx", function(d) {
+                        return xScale(d.Months);
+                   })
+                   .attr("cy", function(d) {
+                        return yScale(d.Index);
+                   })
+                   .attr("r", 5);
+                   
+                svg.selectAll("rect")
+                   .data(dataset)
+                   .enter()
+                   .append("rect")
+                   .attr("x", function(d) {
+                        return xScale(d.Months);
+                   })
+                   .attr("y",  60)                     
+                   .attr("height", 8)
+                   .attr("width", 8)
+                   .attr("stroke", "red")
+				   .attr("stroke-width", 1)
+                   .attr("fill", "white");
+                    
+
+            //histogram
+            var bins = d3.histogram()
+                    .domain(xScale2.domain())
+                    .thresholds(xScale2(20))
+                    (mapForHistogram)
+                console.log(bins);
+                
+            var bar = svg2.selectAll(".bar")
+                       .data(bins)
+                       .enter()
+                       .append("g")
+                            .attr("class", "bar")
+                            .attr("transform", function(d) { 
+                            return "translate(" + xScale2(d.x0) + "," + yScale2(d.length) + ")"; 
+                            });
+            
+            bar.append("rect")
+                .attr("width", xScale2(bins[0].x1) - xScale2(bins[0].x0) -1)
+                .attr("height", function(d) { 
+                    return height2 - yScale2(d.length); 
+                    }); 
+            });            
+
+        </script>
+        
+        <!-- <h2> Hello </h2> -->
+        
+        </body>
+</html>
