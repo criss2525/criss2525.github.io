@@ -125,6 +125,18 @@
                 width: 10;
                 fill: red; 
             }
+            rect.freshVegetable{
+                width: 10;
+                fill: blue;    
+            }
+            rect.storageFruit{
+                width: 10;
+                fill: yellow;             
+            }
+            rect.storageVegetable{
+                width: 10;
+                fill: green;            
+            }
             
 /*Marathon graph CSS attributes*/
 			.lgWomen{
