@@ -73,7 +73,7 @@
                        .attr("height", function(d) {        
                             return height2 - yScale2(d.Count); })
                        .attr("width", 10)
-                       .attr("fill", red);
+                       .attr("fill", "red");
                        //.attr("class", "freshFruit");
 
                 //Create x-axis
@@ -120,7 +120,7 @@
                        .attr("height", function(d) {        
                             return height2 - yScale2(d.Count); })
                        .attr("width", 10)
-                       .attr("fill", red);    
+                       .attr("fill", "red");    
                     //Update y-axis
                     svg.select(".y.axis")
                        .transition()
@@ -157,7 +157,7 @@
                             return height2 - yScale2(d.Count) 
                         })
                        .attr("width", 10)
-                       .attr("fill", blue);
+                       .attr("fill", "blue");
                        //.attr("class", "freshVegetable");
                 });  
                 d3.select("div.button3")
@@ -188,7 +188,7 @@
                             return height2 - yScale2(d.Count) 
                         })
                        .attr("width", 10)
-                       .attr("fill", yellow);
+                       .attr("fill", "yellow");
                        //.attr("class", "storageFruit");
                 }); 
                 
@@ -220,7 +220,7 @@
                             return height2 - yScale2(d.Count)
                         })
                        .attr("width", 10)
-                       .attr("fill", green);
+                       .attr("fill", "green");
                        //.attr("class", "storageVegetable");
                 }); 
                 
