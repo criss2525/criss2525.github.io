@@ -121,7 +121,7 @@
 				stroke: blue;
 				stroke-width: 1;
 			}
-            rect:freshFruit{
+            rect.freshFruit{
                 width: 10;
                 fill: red; 
             }
